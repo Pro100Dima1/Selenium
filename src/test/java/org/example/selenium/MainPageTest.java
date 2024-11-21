@@ -39,11 +39,11 @@ public class MainPageTest {
     public void search() {
         String input = "Selenium";
         WebElement searchField = driver.findElement(By.cssSelector("#sb_form_q"));
-        searchField.sendKeys("Selenium");
+        searchField.sendKeys(input);
         searchField.submit();
 
 
         WebElement searchPageField = driver.findElement(By.cssSelector("#sb_form_q"));
-        assertEquals("Selenium", searchPageField.getAttribute("value"));
+        assertEquals(input, searchPageField.getAttribute("value"));
     }
 }
