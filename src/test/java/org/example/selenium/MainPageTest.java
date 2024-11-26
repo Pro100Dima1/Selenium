@@ -11,6 +11,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.time.Duration;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -44,6 +45,11 @@ public class MainPageTest {
 
 
         WebElement searchPageField = driver.findElement(By.cssSelector("#sb_form_q"));
-        assertEquals(input, searchPageField.getAttribute("value"));
+        assertEquals(input, searchPageField.getAttribute("value"), "Не нашлося");
+    }
+    @DisplayName("Проверка что первая ссылка в выдаче ведет на https://www.selenium.dev/ ")
+    @Test
+    public void searchPage(){
+        List<WebElement> href = driver.findElements(By.cssSelector("a[h='ID=SERP,5160.2']"));
     }
 }
