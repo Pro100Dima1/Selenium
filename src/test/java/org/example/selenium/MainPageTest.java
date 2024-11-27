@@ -1,16 +1,12 @@
 package org.example.selenium;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -33,7 +29,6 @@ public class MainPageTest {
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.get("https://www.bing.com/");
-
     }
 
     @AfterEach
@@ -42,24 +37,23 @@ public class MainPageTest {
     }
 
     @DisplayName("Проверка поисковой строки в поисковике bing")
-    @Test
+    @RepeatedTest(1)
     public void search() {
         String input = "Selenium";
         WebElement searchField = driver.findElement(By.cssSelector("#sb_form_q"));
         searchField.sendKeys(input);
         searchField.submit();
-        WebElement searchButton = driver.findElement(By.cssSelector("h2 > a[h='ID=SERP,5165.2']"));
+        By locator = By.xpath("//a[contains (@class, 'tilk')]");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(6));
-        wait.until(ExpectedConditions.visibilityOf(searchButton));
-
-        List<WebElement> href = driver.findElements(By.cssSelector("h2 > a[href] "));
-        searchPage(href,0);
-
-        //WebElement searchPageField = driver.findElement(By.cssSelector("#sb_form_q"));
-       // assertEquals(input, searchPageField.getAttribute("value"), "Не нашлося");
-        assertEquals("https://www.selenium.dev", driver.getCurrentUrl(), "Переход не по первой ссылке списка!!!");
+        wait.until(ExpectedConditions.attributeContains(locator, "aria-label", "Selenium"));
+        List<WebElement> href = driver.findElements(locator);
+        searchPage(href, 0);
+        ArrayList tabs = new ArrayList<>(driver.getWindowHandles());
+        if (tabs.size() > 1) driver.switchTo().window(tabs.get(1).toString());
+        assertEquals("https://www.selenium.dev/", driver.getCurrentUrl(), "Переход не по первой ссылке списка!!!");
     }
-    public void searchPage(List<WebElement> href, int num){
+
+    public void searchPage(List<WebElement> href, int num) {
         href.get(num).click();
         //WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(6));
         //wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.selenium-button selenium-webdriver text-uppercase fw-bold")));
